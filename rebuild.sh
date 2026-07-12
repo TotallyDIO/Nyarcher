@@ -2,7 +2,7 @@
 
 # Variables
 LATEST_TAG_VERSION=`curl -s https://api.github.com/repos/NyarchLinux/NyarchLinux/releases/latest | grep "tag_name" | awk -F'"' '/tag_name/ {print $4}'`
-RELEASE_LINK="github.com/NyarchLinux/NyarchLinux/releases/latest/download/"
+RELEASE_LINK="https://github.com/TotallyDIO/NyarcherAccessories/raw/refs/heads/main/"
 CURRENT_ENV=${XDG_CURRENT_DESKTOP,,}
 RED='\033[0;31m'
 NC='\033[0m'
@@ -19,8 +19,7 @@ if [[ -f /bin/pacman ]]; then
 
         if [ "$tarball_downloaded" = "false" ]; then
             file_path=/tmp/NyarchLinux.tar.gz
-            url=${RELEASE_LINK}NyarchLinux.tar.gz
-
+            url=${RELEASE_LINK}${LATEST_TAG_VERSION}/NyarchLinux.tar.gz
             echo "Downloading Nyarch tarball from $url"
             wget -q -O "$file_path" "$url"
             cd /tmp
