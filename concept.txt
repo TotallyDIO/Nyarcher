@@ -1,0 +1,27 @@
+check for Desktop Enviroment, save  output to int "DE"
+Check for OS - Arch, Debian, Fedora (arch 1, deb 2, fed 3,) save to int "OS" 
+define any other vars here
+
+if OS = 1 then;
+	if DE = 1 then:
+		Arch GNOME Setup
+	elif DE = 2 then:
+		Arch KDE Setup
+	else
+		exit
+elif OS = 2 then;
+	if DE = 1 then:
+		deb GNOME setup
+	elif DE = 2 then:
+		deb KDE Setup
+	else
+		exit
+elif OS = 3 then;
+	if DE = 1 then:
+		fed GNOME Setup
+	elif DE = 2 then:
+		fed KDE Setup
+	else
+		exit
+else
+	exit
