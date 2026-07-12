@@ -16,19 +16,46 @@ if [[ -f /bin/pacman ]]; then
 
     # Dectects DE
     if [[ $CURRENT_ENV == *"gnome"* ]]; then
+        get_tarball() {
+            if [ "$tarball_downloaded" = "false" ]; then
+                file_path=/tmp/NyarchLinux.tar.gz
+                url=${RELEASE_LINK}${LATEST_TAG_VERSION}/NyarchLinux.tar.gz
+                echo "Downloading Nyarch tarball from $url"
+                wget -q -O "$file_path" "$url"
+                cd /tmp
+                tar -xf "$file_path"
 
-        if [ "$tarball_downloaded" = "false" ]; then
-            file_path=/tmp/NyarchLinux.tar.gz
-            url=${RELEASE_LINK}${LATEST_TAG_VERSION}/NyarchLinux.tar.gz
-            echo "Downloading Nyarch tarball from $url"
-            wget -q -O "$file_path" "$url"
+                tarball_downloaded="true"
+            fi
+        }
+        install_extensions() {
+            cd ~/.local/share/gnome-shell  # Go to Gnome extensions config folder 
+            echo "Backup old extensions to extensions-backup..."
+            mv -f extensions extensions-backup  # Backup old extensions 
+
+            cp -rf /tmp/NyarchLinuxComp/Gnome/etc/skel/.local/share/gnome-shell/extensions ~/.local/share/gnome-shell
+            
+            # Install material you
             cd /tmp
-            tar -xf "$file_path"
-
-            tarball_downloaded="true"
-        fi
-    
-
+            git clone https://github.com/FrancescoCaracciolo/material-you-colors.git
+            cd material-you-colors
+            make build
+            make install
+            npm install --prefix $HOME/.local/share/gnome-shell/extensions/material-you-colors@francescocaracciolo.github.io;
+            cd $HOME/.local/share/gnome-shell/extensions/material-you-colors@francescocaracciolo.github.io
+            git clone https://github.com/francescocaracciolo/adwaita-material-you
+            cd adwaita-material-you
+            bash local-install.sh
+            # Set correct permissions 
+            cd
+            chmod -R 755 $HOME/.local/share/gnome-shell/extensions/*
+            
+            # Install material you icons 
+            cp -rf /tmp/NyarchLinuxComp/Gnome/etc/skel/.config/nyarch ~/.config
+            cd ~/.config/nyarch
+            git clone https://github.com/vinceliuice/Tela-circle-icon-theme
+        }
+        get
     elif [[ $CURRENT_ENV == *"kde"* ]]; then
         echo "kde is running"
         exit
@@ -36,8 +63,6 @@ if [[ -f /bin/pacman ]]; then
         echo "No supported desktop environment found. Exiting."
         exit 1
     fi
-
-
 
 elif [[ -f /bin/apt ]]; then
     echo "APT is installed."
